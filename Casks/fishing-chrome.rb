@@ -1,4 +1,4 @@
-cask "google-chrome-testing" do
+cask "fishing-chrome" do
   arch arm: "arm64", intel: "x64"
 
   version "149.0.7779.0"
@@ -6,8 +6,8 @@ cask "google-chrome-testing" do
 
   url "https://storage.googleapis.com/chrome-for-testing-public/#{version}/mac-#{arch}/chrome-mac-#{arch}.zip",
       verified: "storage.googleapis.com/chrome-for-testing-public/"
-  name "Google Chrome for Testing"
-  desc "Official Chrome build for testing automation"
+  name "Fishing Chrome"
+  desc "Official Chrome cooked for ..."
   homepage "https://googlechromelabs.github.io/chrome-for-testing/"
 
   livecheck do
