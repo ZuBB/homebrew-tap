@@ -23,22 +23,22 @@ cask "google-chrome-testing" do
 
   app "chrome-mac-#{arch}/Google Chrome for Testing.app", target: "Google Chrome for Testing.app"
 
-  preflight do
-    cask_file_dir = Pathname.new(__FILE__).dirname
+  #preflight do
+  #  cask_file_dir = Pathname.new(__FILE__).dirname
 
-    # FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns",
-                 # "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
-  end
+  #  FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns",
+  #               "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
+  #end
 
-  zap trash: [
-        "~/Library/Application Support/Google/Chrome for Testing",
-        "~/Library/Caches/com.google.ChromeTesting",
-        "~/Library/Preferences/com.google.ChromeTesting.plist",
-        "~/Library/Saved Application State/com.google.ChromeTesting.savedState",
-      ],
-      rmdir: [
-        "~/Library/Application Support/Google/Chrome for Testing",
-        "~/Library/Caches/Google",
-        "~/Library/Google",
-      ]
+  # zap trash: [
+  #       "~/Library/Application Support/Google/Chrome for Testing",
+  #       "~/Library/Caches/com.google.ChromeTesting",
+  #       "~/Library/Preferences/com.google.ChromeTesting.plist",
+  #       "~/Library/Saved Application State/com.google.ChromeTesting.savedState",
+  #     ],
+  #     rmdir: [
+  #       "~/Library/Application Support/Google/Chrome for Testing",
+  #       "~/Library/Caches/Google",
+  #       "~/Library/Google",
+  #     ]
 end
