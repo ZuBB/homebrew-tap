@@ -23,12 +23,12 @@ cask "google-chrome-testing" do
 
   app "chrome-mac-#{arch}/Google Chrome for Testing.app", target: "Google Chrome for Testing.app"
 
-  #preflight do
-  #  cask_file_dir = Pathname.new(__FILE__).dirname
+  preflight do
+    cask_file_dir = Pathname.new(__FILE__).dirname
 
-  #  FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns",
-  #               "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
-  #end
+    FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns",
+                 "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
+  end
 
   postflight do
     system_command '/usr/bin/codesign',
