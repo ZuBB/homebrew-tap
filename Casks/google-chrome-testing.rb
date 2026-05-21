@@ -32,13 +32,10 @@ cask "google-chrome-testing" do
 
   postflight do
     system_command '/usr/bin/codesign',
-      args: [
-        '--force',
-        '--deep',
-        '--sign',
-        '-',
-        "#{appdir}/Google Chrome for Testing.app",
-      ]
+      args: ['--force', '--deep', '--sign', '-', "#{appdir}/Google Chrome for Testing.app"]
+
+    system_command '/usr/bin/xattr',
+      args: ['-dr', 'com.apple.quarantine', "#{appdir}/Google Chrome for Testing.app"]
   end
 
   # zap trash: [
