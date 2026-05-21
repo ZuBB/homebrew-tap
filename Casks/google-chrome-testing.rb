@@ -26,8 +26,12 @@ cask "google-chrome-testing" do
   preflight do
     cask_file_dir = Pathname.new(__FILE__).dirname
 
-    FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns",
-                 "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
+    # FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns",
+                 # "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
+
+    Dir.glob("#{appdir}/Google Chrome for Testing.app/**/Contents/Resources/app.icns").each do |icon_path|
+      FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns", icon_path)
+    end
   end
 
   postflight do
