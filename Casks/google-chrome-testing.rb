@@ -30,6 +30,17 @@ cask "google-chrome-testing" do
   #               "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
   #end
 
+  postflight do
+    system_command '/usr/bin/codesign',
+      args: [
+        '--force',
+        '--deep',
+        '--sign',
+        '-',
+        "#{appdir}/Google Chrome for Testing.app",
+      ]
+  end
+
   # zap trash: [
   #       "~/Library/Application Support/Google/Chrome for Testing",
   #       "~/Library/Caches/com.google.ChromeTesting",
