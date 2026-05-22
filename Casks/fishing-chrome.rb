@@ -23,20 +23,29 @@ cask "fishing-chrome" do
 
   app "chrome-mac-#{arch}/Google Chrome for Testing.app", target: "Fishing Chrome.app"
 
-  preflight do
-    cask_file_dir = Pathname.new(__FILE__).dirname
-    icon_path = cask_file_dir/"../Resources/google-chrome-for-testing.icns"
-
-    Dir.glob("#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/**/Contents/Resources/app.icns").each do |target_icon_path|
-      FileUtils.cp(icon_path, target_icon_path)
-    end
-  end
-
   postflight do
+    app_path = "#{appdir}/Google Chrome for Testing.app"
+    icon_path = "#{staged_path}/google-chrome-for-testing.icns"
+
+    system_command '/usr/bin/osascript',
+      args: [
+        '-e',
+        "use framework \"AppKit\"",
+        '-e',
+        "set appPath to \"#{app_path}\"",
+        '-e',
+        "set iconPath to \"#{icon_path}\"",
+        '-e',
+        "set image to current application's NSImage's alloc()'s initWithContentsOfFile:iconPath",
+        '-e',
+        "current application's NSWorkspace's sharedWorkspace()'s setIcon:image forFile:appPath options:0",
+      ]
+
     system_command '/usr/bin/codesign',
-      args: ['--force', '--deep', '--sign', '-', "#{appdir}/Fishing Chrome.app"]
+      args: ['--force', '--deep', '--sign', '-', app_path]
 
     system_command '/usr/bin/xattr',
-      args: ['-dr', 'com.apple.quarantine', "#{appdir}/Fishing Chrome.app"]
+      args: ['-dr', 'com.apple.quarantine', app_path]
   end
 end
+
