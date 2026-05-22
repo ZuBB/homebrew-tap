@@ -25,7 +25,7 @@ cask "fishing-chrome" do
 
   postflight do
     app_path = "#{appdir}/Google Chrome for Testing.app"
-    icon_path = "#{staged_path}/google-chrome-for-testing.icns"
+    icon_path = cask_file_dir/"../Resources/google-chrome-for-testing.icns"
 
     system_command '/opt/homebrew/bin/fileicon',
       args: ['set', '-q', app_path, icon_path]
