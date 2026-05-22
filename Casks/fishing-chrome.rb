@@ -7,7 +7,7 @@ cask "fishing-chrome" do
   url "https://storage.googleapis.com/chrome-for-testing-public/#{version}/mac-#{arch}/chrome-mac-#{arch}.zip",
       verified: "storage.googleapis.com/chrome-for-testing-public/"
   name "Fishing Chrome"
-  desc "Official Chrome cooked for ..."
+  desc "Official Chrome wrapped for some fishing experiments of me"
   homepage "https://googlechromelabs.github.io/chrome-for-testing/"
 
   livecheck do

@@ -11,6 +11,7 @@ cask "google-chrome-testing" do
   homepage "https://googlechromelabs.github.io/chrome-for-testing/"
 
   livecheck do
+    # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
     url "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"
     strategy :page_match do |page|
       data = JSON.parse(page)
@@ -23,43 +24,30 @@ cask "google-chrome-testing" do
 
   app "chrome-mac-#{arch}/Google Chrome for Testing.app", target: "Google Chrome for Testing.app"
 
-  preflight do
+  postflight do
+    app_path = "#{appdir}/Fishing Chrome.app"
     cask_file_dir = Pathname.new(__FILE__).dirname
     icon_path = cask_file_dir/"../Resources/google-chrome-for-testing.icns"
 
-    Dir.glob("#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/**/Contents/Resources/app.icns").each do |target_icon_path|
-      FileUtils.cp(icon_path, target_icon_path)
-    end
-  end
-
-# preflight do
-#   cask_file_dir = Pathname.new(__FILE__).dirname
-
-#   # FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns",
-#                # "#{staged_path}/chrome-mac-#{arch}/Google Chrome for Testing.app/Contents/Resources/app.icns")
-
-#   Dir.glob("#{appdir}/Google Chrome for Testing.app/**/Contents/Resources/app.icns").each do |icon_path|
-#     FileUtils.cp(cask_file_dir/"../Resources/google-chrome-for-testing.icns", icon_path)
-#   end
-# end
-
-  postflight do
-    system_command '/usr/bin/codesign',
-      args: ['--force', '--deep', '--sign', '-', "#{appdir}/Google Chrome for Testing.app"]
-
     system_command '/usr/bin/xattr',
-      args: ['-dr', 'com.apple.quarantine', "#{appdir}/Google Chrome for Testing.app"]
-  end
+      args: ['-dr', 'com.apple.quarantine', app_path]
 
-  # zap trash: [
-  #       "~/Library/Application Support/Google/Chrome for Testing",
-  #       "~/Library/Caches/com.google.ChromeTesting",
-  #       "~/Library/Preferences/com.google.ChromeTesting.plist",
-  #       "~/Library/Saved Application State/com.google.ChromeTesting.savedState",
-  #     ],
-  #     rmdir: [
-  #       "~/Library/Application Support/Google/Chrome for Testing",
-  #       "~/Library/Caches/Google",
-  #       "~/Library/Google",
-  #     ]
+    system_command '/usr/bin/codesign',
+      args: ['--force', '--deep', '--sign', '-', app_path]
+
+    system_command '/usr/bin/osascript',
+      args: [
+        '-e',
+        "use framework \"AppKit\"",
+        '-e',
+        "set appPath to \"#{app_path}\"",
+        '-e',
+        "set iconPath to \"#{icon_path}\"",
+        '-e',
+        "set image to current application's NSImage's alloc()'s initWithContentsOfFile:iconPath",
+        '-e',
+        "current application's NSWorkspace's sharedWorkspace()'s setIcon:image forFile:appPath options:0",
+      ]
+  end
 end
+
