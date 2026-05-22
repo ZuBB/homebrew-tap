@@ -27,25 +27,28 @@ cask "fishing-chrome" do
     app_path = "#{appdir}/Google Chrome for Testing.app"
     icon_path = "#{staged_path}/google-chrome-for-testing.icns"
 
-    system_command '/usr/bin/osascript',
-      args: [
-        '-e',
-        "use framework \"AppKit\"",
-        '-e',
-        "set appPath to \"#{app_path}\"",
-        '-e',
-        "set iconPath to \"#{icon_path}\"",
-        '-e',
-        "set image to current application's NSImage's alloc()'s initWithContentsOfFile:iconPath",
-        '-e',
-        "current application's NSWorkspace's sharedWorkspace()'s setIcon:image forFile:appPath options:0",
-      ]
+    system_command '/opt/homebrew/bin/fileicon',
+      args: ['set', '-q', app_path, icon_path]
 
-    system_command '/usr/bin/codesign',
-      args: ['--force', '--deep', '--sign', '-', app_path]
+#   system_command '/usr/bin/osascript',
+#     args: [
+#       '-e',
+#       "use framework \"AppKit\"",
+#       '-e',
+#       "set appPath to \"#{app_path}\"",
+#       '-e',
+#       "set iconPath to \"#{icon_path}\"",
+#       '-e',
+#       "set image to current application's NSImage's alloc()'s initWithContentsOfFile:iconPath",
+#       '-e',
+#       "current application's NSWorkspace's sharedWorkspace()'s setIcon:image forFile:appPath options:0",
+#     ]
 
     system_command '/usr/bin/xattr',
       args: ['-dr', 'com.apple.quarantine', app_path]
+
+    system_command '/usr/bin/codesign',
+      args: ['--force', '--deep', '--sign', '-', app_path]
   end
 end
 
