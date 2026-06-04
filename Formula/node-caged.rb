@@ -19,6 +19,21 @@ class NodeCaged < Formula
     prefix.install Dir["*"]
   end
 
+  def post_install
+    node_modules = HOMEBREW_PREFIX/"lib/node_modules"
+    node_modules.mkpath
+
+    rm_r node_modules/"npm" if (node_modules/"npm").exist?
+    cp_r lib/"node_modules/npm", node_modules
+
+    ln_sf node_modules/"npm/bin/npm-cli.js", bin/"npm"
+    ln_sf node_modules/"npm/bin/npx-cli.js", bin/"npx"
+    ln_sf bin/"npm", HOMEBREW_PREFIX/"bin/npm"
+    ln_sf bin/"npx", HOMEBREW_PREFIX/"bin/npx"
+
+    (node_modules/"npm/npmrc").atomic_write("prefix = #{HOMEBREW_PREFIX}\n")
+  end
+
   test do
     assert_equal "v26.3.0", shell_output("#{bin}/node --version").strip
     assert_equal "darwin-arm64", shell_output("#{bin}/node -p \"process.platform + '-' + process.arch\"").strip
