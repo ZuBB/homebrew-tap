@@ -62,7 +62,8 @@ To install any of the formulas below:
 
 ### Formula
 
-- _TBD_
+- [node-caged] [<kbd>javascript</kbd>]
+  Node.js with V8 pointer compression enabled.
 
 ### Casks
 
@@ -70,6 +71,7 @@ To install any of the formulas below:
   Google Chrome for Testing override.
 
 [google-chrome-testing]: https://developer.chrome.com/blog/chrome-for-testing
+[node-caged]: https://github.com/platformatic/node-caged
 
 ## License
 
