@@ -60,7 +60,7 @@ cask "chromium" do
           "--no-default-browser-check",
           "--allow-insecure-localhost",
           "--use-mock-keychain",
-          "--disable-features=OSCryptAsyncAvailabilityInfoBar",
+          "--disable-features=OSCryptAsyncAvailabilityInfoBar,OnDeviceModelBackgroundDownload,OptimizationGuideOnDeviceModel,AIPromptAPI,AIPromptAPIForWorkers,AIPromptAPILegacyIdentifiers,AIPromptAPILegacyParams,AIPromptAPIMultimodalInput,AIPromptAPIParams,AIPromptAPIStructuredOutput,AIPromptAPIToolUse,PromptApi",
         };
         const int extra_argc = sizeof(extra_args) / sizeof(extra_args[0]);
         char **exec_argv = calloc((size_t)argc + extra_argc + 1, sizeof(char *));
