@@ -80,7 +80,8 @@ brew install --cask ZuBB/tap/fishing-chrome
 ```
 
 The launcher uses `~/Library/Application Support/Fishing Chrome`, including
-when opened from Finder. This is a new profile: sign in once after upgrading.
+when opened from Finder. The launcher suppresses first-run setup and the
+default-browser prompt. This is a new profile: sign in once after upgrading.
 The cask does not migrate or delete the previous `fbi/profile` directory or
 Chrome for Testing profiles. Ordinary upgrades and reinstalls preserve the
 new profile because it lives outside the application bundle.
@@ -99,6 +100,13 @@ If a login disappears after restarting, check `chrome://version`: **Profile
 Path** should remain under the same Fishing Chrome directory on both launches.
 Quit fully with Cmd-Q before reopening. Check site-data deletion settings and
 any macOS Keychain access prompt if cookies still fail to persist.
+
+Allow the browser's **Safe Storage** Keychain request. Chrome uses this key to
+encrypt/decrypt saved cookies; denying access leaves the key unavailable, even
+with a dedicated profile. For a repeatable check, allow access, sign in again,
+quit with Cmd-Q, and reopen Fishing Chrome. This does not require deleting the
+profile or resetting the Keychain. First-run suppression does not suppress this
+security prompt. See [Chromium's Keychain provider](https://github.com/chromium/chromium/blob/main/components/os_crypt/async/browser/keychain_key_provider.mm).
 
 The cask signs the completed app bundle and verifies it strictly after applying
 its icon. It does not clear cookies, reset the Keychain, or copy authentication

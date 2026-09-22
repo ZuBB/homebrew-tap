@@ -32,20 +32,25 @@ cask "fishing-chrome" do
       *) echo "FISHING_CHROME_USER_DATA_DIR must be an absolute path" >&2; exit 1 ;;
     esac
     exec "$contents/Helpers/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing" \
-      "--user-data-dir=$profile" "$@"
+      --no-first-run --no-default-browser-check "--user-data-dir=$profile" "$@"
   SH
-  # Embed the tap icon before entering the install sandbox.
-  generated_script "stage-custom-icon.sh", content: <<~SH
+  # The installer script runs before the app artifact. Prepare its icon before
+  # Finder can cache the installed bundle, without reading tap files at runtime.
+  generated_script "prepare-icon.sh", content: <<~SH
     #!/bin/sh
     set -eu
-    /usr/bin/base64 -D > "$1" <<'ICON'
+    staged_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+    /usr/bin/base64 -D > "$staged_dir/Fishing Chrome.app/Contents/Resources/fishing-chrome.icns" <<'ICON'
     #{[((cask.tap || Tap.fetch("zubb/tap")).path/"Resources/fishing-chrome.icns").binread].pack("m0")}
     ICON
   SH
+  installer script: { executable: "prepare-icon.sh" }
 
   # Keep browser resources separate from the launcher's identity and icon.
   preflight_steps do
     mkdir_p "Fishing Chrome.app/Contents/Helpers"
+    # The icon must exist before Homebrew moves/registers the app in Finder.
+    mkdir_p "Fishing Chrome.app/Contents/Resources"
     move "chrome-mac-#{arch}/Google Chrome for Testing.app",
          "Fishing Chrome.app/Contents/Helpers/Google Chrome for Testing.app"
     write_file "Fishing Chrome.app/Contents/Info.plist", <<~PLIST
@@ -53,6 +58,7 @@ cask "fishing-chrome" do
       <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
       <plist version="1.0">
       <dict>
+        <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
         <key>CFBundleExecutable</key><string>launcher</string>
         <key>CFBundleIdentifier</key><string>com.zubb.fishing-chrome</string>
         <key>CFBundleName</key><string>Fishing Chrome</string>
@@ -68,9 +74,6 @@ cask "fishing-chrome" do
   end
 
   postflight_steps do
-    mkdir_p "Fishing Chrome.app/Contents/Resources", base: :appdir
-    run "stage-custom-icon.sh",
-        args: ["{{appdir}}/Fishing Chrome.app/Contents/Resources/fishing-chrome.icns"], base: :staged_path
     run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Fishing Chrome.app"]
     # Chrome for Testing ships with linker-only signatures. Seal the complete
     # bundle after customisation; Finder icon metadata would invalidate it.
@@ -83,5 +86,9 @@ cask "fishing-chrome" do
     Set FISHING_CHROME_USER_DATA_DIR to an absolute path, or pass --user-data-dir,
     when launching from a terminal to use another profile. Existing profiles are
     not moved or deleted. Quit the browser fully before switching profiles.
+
+    Allow the browser's Safe Storage Keychain request to persist encrypted login
+    cookies across restarts. Denying access prevents it from obtaining that key.
+    The launcher skips first-run setup, but does not bypass Keychain access.
   EOS
 end
