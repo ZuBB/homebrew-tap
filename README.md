@@ -70,6 +70,40 @@ To install any of the formulas below:
 - [google-chrome-testing] [<kbd>c++</kbd>]
   Google Chrome for Testing override.
 
+### Fishing Chrome
+
+`fishing-chrome` requires Homebrew 7 and macOS 13 or later. It bundles the
+stable Chrome for Testing release in a separate launcher app.
+
+```sh
+brew install --cask ZuBB/tap/fishing-chrome
+```
+
+The launcher uses `~/Library/Application Support/Fishing Chrome`, including
+when opened from Finder. This is a new profile: sign in once after upgrading.
+The cask does not migrate or delete the previous `fbi/profile` directory or
+Chrome for Testing profiles. Ordinary upgrades and reinstalls preserve the
+new profile because it lives outside the application bundle.
+
+For a different profile, launch from a terminal:
+
+```sh
+FISHING_CHROME_USER_DATA_DIR="/absolute/path/to/profile" \
+  "/Applications/Fishing Chrome.app/Contents/MacOS/launcher"
+```
+
+The Fishing Chrome icon belongs to the launcher; the bundled browser retains
+Chrome for Testing's name and interface. Its Dock icon may use Chrome's branding.
+
+If a login disappears after restarting, check `chrome://version`: **Profile
+Path** should remain under the same Fishing Chrome directory on both launches.
+Quit fully with Cmd-Q before reopening. Check site-data deletion settings and
+any macOS Keychain access prompt if cookies still fail to persist.
+
+The cask signs the completed app bundle and verifies it strictly after applying
+its icon. It does not clear cookies, reset the Keychain, or copy authentication
+data between profiles.
+
 [google-chrome-testing]: https://developer.chrome.com/blog/chrome-for-testing
 [node-caged]: https://github.com/platformatic/node-caged
 
